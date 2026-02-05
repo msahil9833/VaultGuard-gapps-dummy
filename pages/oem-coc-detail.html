@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COC Detail - VaultGuard</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <style>
+        .tab-container {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid var(--border);
+            overflow-x: auto;
+            background: var(--light);
+        }
+        .tab {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            font-weight: 500;
+            color: var(--text-light);
+            position: relative;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .tab:hover {
+            background: rgba(37, 99, 235, 0.05);
+            color: var(--primary);
+        }
+        .tab.active {
+            color: var(--primary);
+            background: white;
+        }
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--primary);
+        }
+        .tab-status {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-left: 0.5rem;
+        }
+        .tab-status.completed { background: var(--success); }
+        .tab-status.in-progress { background: var(--warning); }
+        .tab-status.not-started { background: var(--text-light); }
+        .tab-content {
+            padding: 2rem;
+        }
+        .tab-panel {
+            display: none;
+        }
+        .tab-panel.active {
+            display: block;
+        }
+        .form-section {
+            margin-bottom: 2rem;
+        }
+        .form-section h4 {
+            margin-bottom: 1rem;
+            color: var(--text);
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>VaultGuard</h2>
+                <p class="tagline">Securing Tomorrow's Mobility</p>
+                <div class="user-info">
+                    <div class="user-avatar">RK</div>
+                    <div class="user-details">
+                        <div class="name">Rajesh Kumar</div>
+                        <div class="role">OEM - Maruti Suzuki</div>
+                    </div>
+                </div>
+            </div>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item"><a href="oem.html">Dashboard</a></li>
+                    <li class="nav-item"><a href="oem-coc-management.html" class="active">COC Management</a></li>
+                    <li class="nav-item"><a href="oem-tara.html">TARA</a></li>
+                </ul>
+            </nav>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </aside>
+        
+        <main class="main-content">
+            <span class="back-button" onclick="window.location.href='oem-coc-management.html'">← Back to COC List</span>
+            
+            <div class="page-header">
+                <div>
+                    <h1 id="cocTitle">COC-MSIL-2026-001</h1>
+                    <p id="cocSubtitle">Swift Dzire 2026 - Certificate of Compliance</p>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button class="btn btn-secondary" onclick="saveDraft()">Save Draft</button>
+                    <button class="btn btn-success" onclick="submitCOC()">Submit for Review</button>
+                    <button class="btn btn-primary" onclick="downloadPDF()">Download PDF</button>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 1.5rem;">
+                <div class="card-body" style="padding: 1rem 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong>Overall Progress:</strong>
+                            <span id="overallProgress" style="margin-left: 1rem; font-size: 1.25rem; color: var(--primary); font-weight: 600;">65%</span>
+                        </div>
+                        <div style="flex: 1; margin: 0 2rem;">
+                            <div class="progress-bar">
+                                <div id="progressBar" class="progress-fill" style="width: 65%;">65%</div>
+                            </div>
+                        </div>
+                        <span id="cocStatus" class="badge badge-warning">DRAFT</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-container">
+                <div class="tabs" id="tabsContainer">
+                    <button class="tab active" data-tab="tab1">
+                        1. Vehicle Info
+                        <span class="tab-status completed"></span>
+                    </button>
+                    <button class="tab" data-tab="tab2">
+                        2. CSMS Policy
+                        <span class="tab-status completed"></span>
+                    </button>
+                    <button class="tab" data-tab="tab3">
+                        3. TARA Results
+                        <span class="tab-status completed"></span>
+                    </button>
+                    <button class="tab" data-tab="tab4">
+                        4. Security Controls
+                        <span class="tab-status in-progress"></span>
+                    </button>
+                    <button class="tab" data-tab="tab5">
+                        5. Testing Evidence
+                        <span class="tab-status in-progress"></span>
+                    </button>
+                    <button class="tab" data-tab="tab6">
+                        6. Incident Response
+                        <span class="tab-status not-started"></span>
+                    </button>
+                    <button class="tab" data-tab="tab7">
+                        7. Vulnerability Mgmt
+                        <span class="tab-status not-started"></span>
+                    </button>
+                    <button class="tab" data-tab="tab8">
+                        8. Supply Chain
+                        <span class="tab-status not-started"></span>
+                    </button>
+                    <button class="tab" data-tab="tab9">
+                        9. Evidence Links
+                        <span class="tab-status not-started"></span>
+                    </button>
+                    <button class="tab" data-tab="tab10">
+                        10. Audit Trail
+                        <span class="tab-status completed"></span>
+                    </button>
+                </div>
+
+                <div class="tab-content">
+                    <!-- TAB 1: Vehicle Information -->
+                    <div id="tab1" class="tab-panel active">
+                        <h3 style="margin-bottom: 1.5rem;">Vehicle Information</h3>
+                        <form>
+                            <div class="form-section">
+                                <h4>Basic Details</h4>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                    <div class="form-group">
+                                        <label>Vehicle Identification Number (VIN) *</label>
+                                        <input type="text" value="MA3FWD71S00000001" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Vehicle Model *</label>
+                                        <input type="text" value="Swift Dzire 2026" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Manufacturer *</label>
+                                        <input type="text" value="Maruti Suzuki India Ltd" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Model Year *</label>
+                                        <input type="number" value="2026" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Engine Type *</label>
+                                        <input type="text" value="K15C Petrol" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Transmission *</label>
+                                        <select required>
+                                            <option>Manual</option>
+                                            <option selected>Automatic (AMT)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <h4>Electronic Architecture</h4>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                    <div class="form-group">
+                                        <label>Number of ECUs *</label>
+                                        <input type="number" value="28" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Network Architecture *</label>
+                                        <select required>
+                                            <option selected>CAN Bus</option>
+                                            <option>FlexRay</option>
+                                            <option>Automotive Ethernet</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Connected Features</label>
+                                        <input type="text" value="Telematics, WiFi, Bluetooth" placeholder="e.g., 4G, WiFi, Bluetooth">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>OTA Update Capable</label>
+                                        <select>
+                                            <option>No</option>
+                                            <option selected>Yes</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="text-align: right; margin-top: 2rem;">
+                                <button type="button" class="btn btn-primary" onclick="nextTab()">Next: CSMS Policy →</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- TAB 2: CSMS Policy -->
+                    <div id="tab2" class="tab-panel">
+                        <h3 style="margin-bottom: 1.5rem;">CSMS Policy Documentation</h3>
+                        <form>
+                            <div class="form-section">
+                                <h4>Policy Information</h4>
+                                <div class="form-group">
+                                    <label>CSMS Policy Document</label>
+                                    <div style="padding: 1rem; background: var(--light); border-radius: var(--radius-md); border: 2px dashed var(--border);">
+                                        <div style="display: flex; align-items: center; gap: 1rem;">
+                                            <span style="font-size: 2rem;"></span>
+                                            <div style="flex: 1;">
+                                                <strong>CSMS-Policy-v2.1.pdf</strong>
+                                                <div style="color: var(--text-light); font-size: 0.875rem;">2.4 MB • Uploaded on 2026-01-10</div>
+                                            </div>
+                                            <button type="button" class="btn btn-secondary btn-sm">Download</button>
+                                            <button type="button" class="btn btn-primary btn-sm">Replace</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                    <div class="form-group">
+                                        <label>Policy Version *</label>
+                                        <input type="text" value="v2.1" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Approval Date *</label>
+                                        <input type="date" value="2026-01-10" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Approved By *</label>
+                                        <input type="text" value="Dr. Ramesh Gupta (CISO)" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Next Review Date *</label>
+                                        <input type="date" value="2027-01-10" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <h4>CSMS Scope</h4>
+                                <div class="form-group">
+                                    <label>Scope Description *</label>
+                                    <textarea rows="4" required>Covers all electronic systems, software, and connected features of Swift Dzire 2026 model including Engine ECU, Telematics, Infotainment, and all network communications.</textarea>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                                <button type="button" class="btn btn-secondary" onclick="previousTab()">← Previous</button>
+                                <button type="button" class="btn btn-primary" onclick="nextTab()">Next: TARA Results →</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- TAB 3: TARA Results -->
+                    <div id="tab3" class="tab-panel">
+                        <h3 style="margin-bottom: 1.5rem;">TARA Results</h3>
+                        <div style="padding: 1rem; background: var(--light); border-radius: var(--radius-md); margin-bottom: 1.5rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <strong>Linked TARA:</strong> <code style="margin-left: 0.5rem;">TARA-MSIL-2026-001</code>
+                                </div>
+                                <a href="oem-tara.html?id=1" class="btn btn-primary btn-sm">View Full TARA →</a>
+                            </div>
+                        </div>
+
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-card-header">
+                                    <div><div class="stat-label">Assets Identified</div><div class="stat-value">5</div></div>
+                                    <div class="stat-icon info"></div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-card-header">
+                                    <div><div class="stat-label">Threats Analyzed</div><div class="stat-value">4</div></div>
+                                    <div class="stat-icon warning"></div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-card-header">
+                                    <div><div class="stat-label">High Risks</div><div class="stat-value">2</div></div>
+                                    <div class="stat-icon danger"></div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-card-header">
+                                    <div><div class="stat-label">Controls Implemented</div><div class="stat-value">3</div></div>
+                                    <div class="stat-icon success"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="margin-top: 1.5rem;">
+                            <div class="card-header"><h4>Top Risks</h4></div>
+                            <div class="card-body">
+                                <table>
+                                    <thead><tr><th>Threat</th><th>Asset</th><th>Risk Score</th><th>Level</th><th>Status</th></tr></thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>CAN Bus Message Injection</strong></td>
+                                            <td>CAN Bus</td>
+                                            <td>16</td>
+                                            <td><span class="badge badge-danger">HIGH</span></td>
+                                            <td><span class="badge badge-warning">Mitigation Planned</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Unauthorized ECU Reprogramming</strong></td>
+                                            <td>Engine ECU</td>
+                                            <td>15</td>
+                                            <td><span class="badge badge-danger">HIGH</span></td>
+                                            <td><span class="badge badge-success">Mitigated</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                            <button type="button" class="btn btn-secondary" onclick="previousTab()">← Previous</button>
+                            <button type="button" class="btn btn-primary" onclick="nextTab()">Next: Security Controls →</button>
+                        </div>
+                    </div>
+
+                    <!-- TAB 4-10: Placeholder tabs -->
+                    <div id="tab4" class="tab-panel">
+                        <h3>Security Controls</h3>
+                        <div style="padding: 3rem; text-align: center; background: var(--light); border-radius: var(--radius-md);">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;"></div>
+                            <h4>Security Controls Documentation</h4>
+                            <p style="color: var(--text-light); margin: 1rem 0;">Document all implemented security controls and their effectiveness.</p>
+                            <button class="btn btn-primary" style="margin-top: 1rem;">+ Add Security Control</button>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                            <button type="button" class="btn btn-secondary" onclick="previousTab()">← Previous</button>
+                            <button type="button" class="btn btn-primary" onclick="nextTab()">Next →</button>
+                        </div>
+                    </div>
+
+                    <div id="tab5" class="tab-panel">
+                        <h3>Testing Evidence</h3>
+                        <div style="padding: 3rem; text-align: center; background: var(--light); border-radius: var(--radius-md);">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;"></div>
+                            <h4>Penetration Test Results</h4>
+                            <p style="color: var(--text-light); margin: 1rem 0;">Upload penetration test reports and vulnerability scan results.</p>
+                            <button class="btn btn-primary" style="margin-top: 1rem;">Upload Test Report</button>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                            <button type="button" class="btn btn-secondary" onclick="previousTab()">← Previous</button>
+                            <button type="button" class="btn btn-primary" onclick="nextTab()">Next →</button>
+                        </div>
+                    </div>
+
+                    <div id="tab6" class="tab-panel">
+                        <h3>Incident Response</h3>
+                        <div style="padding: 3rem; text-align: center; background: var(--light); border-radius: var(--radius-md);">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;"></div>
+                            <h4>Incident Response Plan</h4>
+                            <p style="color: var(--text-light);">Document your cybersecurity incident response procedures.</p>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                            <button type="button" class="btn btn-secondary" onclick="previousTab()">← Previous</button>
+                            <button type="button" class="btn btn-primary" onclick="nextTab()">Next →</button>
+                        </div>
+                    </div>
+
+                    <div id="tab7" class="tab-panel">
+                        <h3>Vulnerability Management</h3>
+                        <div style="padding: 3rem; text-align: center; background: var(--light); border-radius: var(--radius-md);">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;"></div>
+                            <h4>Vulnerability Management Process</h4>
+                            <p style="color: var(--text-light);">Document how vulnerabilities are identified, tracked, and resolved.</p>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                            <button type="button" class="btn btn-secondary" onclick="previousTab()">← Previous</button>
+                            <button type="button" class="btn btn-primary" onclick="nextTab()">Next →</button>
+                        </div>
+                    </div>
+
+                    <div id="tab8" class="tab-panel">
+                        <h3>Supply Chain Security</h3>
+                        <div style="padding: 3rem; text-align: center; background: var(--light); border-radius: var(--radius-md);">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;"></div>
+                            <h4>Third-Party Security Assessments</h4>
+                            <p style="color: var(--text-light);">Document security measures for suppliers and third-party components.</p>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                            <button type="button" class="btn btn-secondary" onclick="previousTab()">← Previous</button>
+                            <button type="button" class="btn btn-primary" onclick="nextTab()">Next →</button>
+                        </div>
+                    </div>
+
+                    <div id="tab9" class="tab-panel">
+                        <h3>Evidence Links</h3>
+                        <div class="card">
+                            <div class="card-header"><h4>Linked Evidence Documents</h4></div>
+                            <div class="card-body">
+                                <table>
+                                    <thead><tr><th>Requirement</th><th>File Name</th><th>Status</th><th>Uploaded</th></tr></thead>
+                                    <tbody>
+                                        <tr><td>REQ-AIS-189-1.1.1</td><td>CSMS-Policy-v1.1.pdf</td><td><span class="badge badge-warning">Under Review</span></td><td>2026-02-03</td></tr>
+                                        <tr><td>REQ-AIS-189-2.1.1</td><td>Risk-Assessment.pdf</td><td><span class="badge badge-warning">Under Review</span></td><td>2026-02-03</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                            <button type="button" class="btn btn-secondary" onclick="previousTab()">← Previous</button>
+                            <button type="button" class="btn btn-primary" onclick="nextTab()">Next →</button>
+                        </div>
+                    </div>
+
+                    <div id="tab10" class="tab-panel">
+                        <h3>Audit Trail</h3>
+                        <div class="card">
+                            <div class="card-header"><h4>Document Change History</h4></div>
+                            <div class="card-body">
+                                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                                    <div style="padding: 1rem; border-left: 4px solid var(--primary); background: var(--light);">
+                                        <div style="display: flex; justify-content: space-between;">
+                                            <strong>COC Created</strong>
+                                            <span style="color: var(--text-light);">2026-01-15 10:30 AM</span>
+                                        </div>
+                                        <div style="color: var(--text-light); margin-top: 0.25rem;">Created by Rajesh Kumar</div>
+                                    </div>
+                                    <div style="padding: 1rem; border-left: 4px solid var(--success); background: var(--light);">
+                                        <div style="display: flex; justify-content: space-between;">
+                                            <strong>Tab 1 Completed</strong>
+                                            <span style="color: var(--text-light);">2026-01-16 02:15 PM</span>
+                                        </div>
+                                        <div style="color: var(--text-light); margin-top: 0.25rem;">Vehicle Information completed</div>
+                                    </div>
+                                    <div style="padding: 1rem; border-left: 4px solid var(--success); background: var(--light);">
+                                        <div style="display: flex; justify-content: space-between;">
+                                            <strong>Tab 2 Completed</strong>
+                                            <span style="color: var(--text-light);">2026-01-17 11:45 AM</span>
+                                        </div>
+                                        <div style="color: var(--text-light); margin-top: 0.25rem;">CSMS Policy completed</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                            <button type="button" class="btn btn-secondary" onclick="previousTab()">← Previous</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/data.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/utils.js"></script>
+    <script>
+        const currentUser = checkAuth();
+        let currentTab = 1;
+
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabId = this.getAttribute('data-tab');
+                switchTab(tabId);
+            });
+        });
+
+        function switchTab(tabId) {
+            // Hide all panels
+            document.querySelectorAll('.tab-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            // Remove active from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected
+            document.getElementById(tabId).classList.add('active');
+            document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
+            
+            currentTab = parseInt(tabId.replace('tab', ''));
+        }
+
+        function nextTab() {
+            if (currentTab < 10) {
+                switchTab('tab' + (currentTab + 1));
+            }
+        }
+
+        function previousTab() {
+            if (currentTab > 1) {
+                switchTab('tab' + (currentTab - 1));
+            }
+        }
+
+        function saveDraft() {
+            showSuccessToast('Draft saved successfully!');
+        }
+
+        function submitCOC() {
+            if (confirm('Submit this COC for review? You cannot edit after submission.')) {
+                showSuccessToast('COC submitted successfully! Auditor will review it.');
+                setTimeout(() => window.location.href = 'oem-coc-management.html', 1500);
+            }
+        }
+
+        function downloadPDF() {
+            showSuccessToast('Downloading COC as PDF...');
+        }
+    </script>
+</body>
+</html>

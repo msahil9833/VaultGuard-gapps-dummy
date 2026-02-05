@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CIRT Admin - VaultGuard</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/dashboard.css" />
+  </head>
+  <body>
+    <div class="dashboard-layout">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <h2>VaultGuard</h2>
+          <p class="tagline">Securing Tomorrow's Mobility</p>
+          <div class="user-info">
+            <div class="user-avatar">PS</div>
+            <div class="user-details">
+              <div class="name" id="userName">Priya Sharma</div>
+              <div class="role">CIRT Administrator</div>
+            </div>
+          </div>
+        </div>
+        <nav>
+          <ul class="nav-menu">
+            <li class="nav-item">
+              <a class="nav-link active" data-section="dashboard">Dashboard</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-section="my-projects">My Projects</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-section="pending-reviews"
+                >Pending Reviews</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-section="review-detail">Review Detail</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-section="rejected">Rejected</a>
+            </li>
+            <li class="nav-item">
+              <a
+                href="cirt-national-reports.html"
+                style="
+                  color: inherit;
+                  text-decoration: none;
+                  display: block;
+                  padding: 0.75rem 1rem;
+                "
+                >National Reports</a
+              >
+            </li>
+          </ul>
+        </nav>
+
+        <button class="logout-btn" onclick="logout()">Logout</button>
+      </aside>
+
+      <main class="main-content">
+        <!-- Dashboard -->
+        <div id="dashboard" class="content-section active">
+          <div class="page-header">
+            <div>
+              <h1>CIRT Admin Dashboard</h1>
+              <p>Review and approve evidence submissions from OEMs.</p>
+            </div>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-card" onclick="Router.navigateTo('my-projects')">
+              <div class="stat-card-header">
+                <div>
+                  <div class="stat-label">Assigned Projects</div>
+                  <div class="stat-value">8</div>
+                </div>
+                <div class="stat-icon primary"></div>
+              </div>
+            </div>
+            <div
+              class="stat-card"
+              onclick="Router.navigateTo('pending-reviews')"
+            >
+              <div class="stat-card-header">
+                <div>
+                  <div class="stat-label">Pending Reviews</div>
+                  <div class="stat-value">87</div>
+                </div>
+                <div class="stat-icon warning"></div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <div>
+                  <div class="stat-label">Approved Today</div>
+                  <div class="stat-value">23</div>
+                </div>
+                <div class="stat-icon success"></div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <div>
+                  <div class="stat-label">Rejected Today</div>
+                  <div class="stat-value">5</div>
+                </div>
+                <div class="stat-icon danger"></div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <h3>Pending Reviews (3)</h3>
+              <button class="btn btn-success btn-sm">✓ Bulk Approve</button>
+            </div>
+            <div class="card-body"><div id="evidenceList"></div></div>
+          </div>
+        </div>
+
+        <!-- My Projects -->
+        <div id="my-projects" class="content-section">
+          <div class="page-header">
+            <div>
+              <h1>My Projects</h1>
+              <p>Projects assigned to you for auditing.</p>
+            </div>
+          </div>
+          <div id="myProjectsList"></div>
+        </div>
+
+        <!-- Pending Reviews -->
+        <div id="pending-reviews" class="content-section">
+          <div class="page-header">
+            <div>
+              <h1>Pending Reviews</h1>
+              <p>Evidence submissions waiting for review.</p>
+            </div>
+          </div>
+          <div id="pendingReviewsList"></div>
+        </div>
+
+        <!-- Review Detail -->
+        <div id="review-detail" class="content-section">
+          <span
+            class="back-button"
+            onclick="Router.navigateTo('pending-reviews')"
+            >← Back</span
+          >
+          <div class="page-header">
+            <div><h1>Evidence Review</h1></div>
+          </div>
+          <div
+            style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem"
+          >
+            <div>
+              <div class="card">
+                <div class="card-header"><h3>Evidence Details</h3></div>
+                <div class="card-body" id="evidenceDetails"></div>
+              </div>
+              <div class="card">
+                <div class="card-header"><h3>Review Form</h3></div>
+                <div class="card-body">
+                  <form>
+                    <div class="form-group">
+                      <label>Decision *</label>
+                      <div style="display: flex; gap: 1rem">
+                        <label
+                          style="
+                            display: flex;
+                            align-items: center;
+                            gap: 0.5rem;
+                          "
+                          ><input
+                            type="radio"
+                            name="decision"
+                            value="APPROVED"
+                          />
+                          Approve</label
+                        ><label
+                          style="
+                            display: flex;
+                            align-items: center;
+                            gap: 0.5rem;
+                          "
+                          ><input
+                            type="radio"
+                            name="decision"
+                            value="REJECTED"
+                          />
+                          Reject</label
+                        >
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label>Comments *</label
+                      ><textarea id="reviewComments" rows="5"></textarea>
+                    </div>
+                    <button
+                      type="button"
+                      class="btn btn-primary btn-block"
+                      onclick="submitReview()"
+                    >
+                      Submit Review
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="card">
+                <div class="card-header"><h3>Document Preview</h3></div>
+                <div
+                  class="card-body"
+                  style="
+                    text-align: center;
+                    padding: 3rem;
+                    background: var(--light);
+                  "
+                >
+                  <div style="font-size: 4rem"></div>
+                  <h3 style="margin-top: 1rem">PDF Preview</h3>
+                  <p style="color: var(--text-light); margin: 1rem 0">
+                    Document preview here
+                  </p>
+                  <button
+                    class="btn btn-primary"
+                    onclick="downloadEvidence('document.pdf')"
+                  >
+                    Download
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rejected -->
+        <div id="rejected" class="content-section">
+          <div class="page-header">
+            <div><h1>Rejected Evidence</h1></div>
+          </div>
+          <div id="rejectedList"></div>
+        </div>
+      </main>
+    </div>
+
+    <script src="../js/data.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/router.js"></script>
+    <script>
+      const currentUser = checkAuth();
+      function load_dashboard() {
+        const evidenceDiv = document.getElementById('evidenceList');
+        const pendingEvidence = MOCK_DATA.evidence.filter(
+          (e) => e.status === 'UNDER_REVIEW',
+        );
+        evidenceDiv.innerHTML = '';
+        pendingEvidence.forEach((ev) => {
+          evidenceDiv.innerHTML += `<div class="evidence-card" onclick="Router.goToReviewDetail(${ev.id})"><div class="evidence-header"><div><div class="evidence-title">${ev.requirementCode}: ${ev.requirementTitle}</div><div class="evidence-meta"><span>${ev.fileName}</span><span> ${ev.fileSize}</span><span> ${ev.submittedBy}</span></div></div><span class="badge badge-warning">Under Review</span></div></div>`;
+        });
+      }
+      function load_my_projects() {
+        const div = document.getElementById('myProjectsList');
+        const userProjects = MOCK_DATA.projects.filter(
+          (p) => p.assignedAuditor === 'Priya Sharma',
+        );
+        div.innerHTML = '';
+        userProjects.forEach((project) => {
+          div.innerHTML += `<div class="project-card"><div class="project-header"><div><div class="project-title">${project.name}</div><div class="project-meta">${project.organization} • ${project.vehicleModel}</div></div><span class="badge badge-success">Active</span></div><div class="progress-container"><div class="progress-bar"><div class="progress-fill" style="width: ${project.completionPercentage}%;">${project.completionPercentage}%</div></div></div></div>`;
+        });
+      }
+      function load_pending_reviews() {
+        const div = document.getElementById('pendingReviewsList');
+        const pendingEvidence = MOCK_DATA.evidence.filter(
+          (e) => e.status === 'UNDER_REVIEW',
+        );
+        div.innerHTML = '';
+        pendingEvidence.forEach((ev) => {
+          div.innerHTML += `<div class="evidence-card" onclick="Router.goToReviewDetail(${ev.id})"><div class="evidence-header"><div><div class="evidence-title">${ev.requirementCode}: ${ev.requirementTitle}</div><div class="evidence-meta"><span> ${ev.fileName}</span><span> ${ev.submittedBy}</span></div></div><span class="badge badge-warning">Under Review</span></div></div>`;
+        });
+      }
+      function load_review_detail() {
+        const evidenceId = sessionStorage.getItem('currentEvidenceId');
+        const evidence = MOCK_DATA.evidence.find((e) => e.id == evidenceId);
+        if (evidence) {
+          document.getElementById('evidenceDetails').innerHTML =
+            `<div><strong>Code:</strong> ${evidence.requirementCode}</div><div><strong>Title:</strong> ${evidence.requirementTitle}</div><div><strong>File:</strong> ${evidence.fileName}</div><div><strong>By:</strong> ${evidence.submittedBy}</div><div><strong>Date:</strong> ${evidence.submittedAt}</div>`;
+        }
+      }
+      function load_rejected() {
+        const div = document.getElementById('rejectedList');
+        const rejected = MOCK_DATA.evidence.filter(
+          (e) => e.status === 'REJECTED',
+        );
+        div.innerHTML = '';
+        rejected.forEach((ev) => {
+          div.innerHTML += `<div class="evidence-card"><div class="evidence-header"><div><div class="evidence-title">${ev.requirementCode}: ${ev.requirementTitle}</div><div style="margin-top:0.5rem;padding:0.75rem;background:#fee2e2;border-left:4px solid var(--danger);"><strong>Reason:</strong> ${ev.reviewComment}</div></div><span class="badge badge-danger">Rejected</span></div></div>`;
+        });
+      }
+      function submitReview() {
+        const decision = document.querySelector(
+          'input[name="decision"]:checked',
+        );
+        const comments = document.getElementById('reviewComments').value;
+        if (decision && comments) {
+          showSuccessToast('Review submitted!');
+          setTimeout(() => Router.navigateTo('pending-reviews'), 1000);
+        } else {
+          showErrorToast('Please select decision and enter comments.');
+        }
+      }
+      load_dashboard();
+    </script>
+  </body>
+</html>

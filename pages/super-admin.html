@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Super Admin - VaultGuard</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/dashboard.css" />
+  </head>
+  <body>
+    <div class="dashboard-layout">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <h2> VaultGuard</h2>
+          <p class="tagline">Securing Tomorrow's Mobility</p>
+          <div class="user-info">
+            <div class="user-avatar">SA</div>
+            <div class="user-details">
+              <div class="name" id="userName">System Admin</div>
+              <div class="role">Super Administrator</div>
+            </div>
+          </div>
+        </div>
+        <nav>
+          <ul class="nav-menu">
+            <li class="nav-item">
+              <a class="nav-link active" data-section="dashboard"
+                > Dashboard</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-section="organizations"
+                > Organizations</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-section="users"> Users</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-section="projects"> Projects</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-section="standards"> Standards</a>
+            </li>
+            <li class="nav-item">
+              <a
+                href="super-admin-analytics.html"
+                style="
+                  color: inherit;
+                  text-decoration: none;
+                  display: block;
+                  padding: 0.75rem 1rem;
+                "
+                > Analytics</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-section="reports"> Reports</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-section="settings"> Settings</a>
+            </li>
+          </ul>
+        </nav>
+
+        <button class="logout-btn" onclick="logout()"> Logout</button>
+      </aside>
+
+      <main class="main-content">
+        <!-- SECTION 1: Dashboard -->
+        <div id="dashboard" class="content-section active">
+          <div class="page-header">
+            <div>
+              <h1>Super Admin Dashboard</h1>
+              <p>
+                Welcome back! Here's what's happening with VaultGuard today.
+              </p>
+            </div>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-card" onclick="Router.navigateTo('organizations')">
+              <div class="stat-card-header">
+                <div>
+                  <div class="stat-label">Total Organizations</div>
+                  <div class="stat-value">12</div>
+                </div>
+                <div class="stat-icon primary"></div>
+              </div>
+            </div>
+            <div class="stat-card" onclick="Router.navigateTo('projects')">
+              <div class="stat-card-header">
+                <div>
+                  <div class="stat-label">Active Projects</div>
+                  <div class="stat-value">45</div>
+                </div>
+                <div class="stat-icon success"></div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <div>
+                  <div class="stat-label">Pending Reviews</div>
+                  <div class="stat-value">234</div>
+                </div>
+                <div class="stat-icon warning"></div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <div>
+                  <div class="stat-label">Avg. Completion</div>
+                  <div class="stat-value">68%</div>
+                </div>
+                <div class="stat-icon info"></div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <h3>Organizations</h3>
+              <button
+                class="btn btn-primary btn-sm"
+                onclick="Router.navigateTo('organizations')"
+              >
+                View All
+              </button>
+            </div>
+            <div class="card-body">
+              <div class="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Organization</th>
+                      <th>Code</th>
+                      <th>Active Projects</th>
+                      <th>Completion Rate</th>
+                      <th>Contact</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dashboardOrgsTable"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3>Recent Activity</h3></div>
+            <div class="card-body"><div id="recentActivity"></div></div>
+          </div>
+        </div>
+
+        <!-- SECTION 2: Organizations -->
+        <div id="organizations" class="content-section">
+          <div class="page-header">
+            <div>
+              <h1>Organizations</h1>
+              <p>Manage OEM organizations and their compliance projects.</p>
+            </div>
+            <button class="btn btn-primary" onclick="showModal('addOrgModal')">
+              + Add Organization
+            </button>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3>All Organizations</h3></div>
+            <div class="card-body">
+              <div class="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Organization</th>
+                      <th>Code</th>
+                      <th>Contact</th>
+                      <th>Active Projects</th>
+                      <th>Completion</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="organizationsTable"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 3: Users -->
+        <div id="users" class="content-section">
+          <div class="page-header">
+            <div>
+              <h1>Users Management</h1>
+              <p>Create and manage user accounts across all roles.</p>
+            </div>
+            <button class="btn btn-primary" onclick="showModal('addUserModal')">
+              + Add User
+            </button>
+          </div>
+          <div class="filters">
+            <div class="filter-group">
+              <label>Search</label>
+              <input
+                type="text"
+                id="userSearch"
+                class="search-box"
+                placeholder="Search by name or email..."
+              />
+            </div>
+            <div class="filter-group">
+              <label>Role</label>
+              <select
+                id="roleFilter"
+                class="search-box"
+                onchange="load_users()"
+              >
+                <option value="">All Roles</option>
+                <option value="SUPER_ADMIN">Super Admin</option>
+                <option value="CIRT_ADMIN">CIRT Admin</option>
+                <option value="OEM">OEM</option>
+                <option value="PENTESTER">Pentester</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label>Status</label>
+              <select
+                id="statusFilter"
+                class="search-box"
+                onchange="load_users()"
+              >
+                <option value="">All</option>
+                <option value="true">Active</option>
+                <option value="false">Inactive</option>
+              </select>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3>All Users</h3></div>
+            <div class="card-body">
+              <div class="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Role</th>
+                      <th>Organization</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="usersTable"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 4: Projects -->
+        <div id="projects" class="content-section">
+          <div class="page-header">
+            <div>
+              <h1>All Projects</h1>
+              <p>Monitor compliance projects across all organizations.</p>
+            </div>
+            <button class="btn btn-primary">+ New Project</button>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <div class="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Project</th>
+                      <th>Organization</th>
+                      <th>Vehicle Model</th>
+                      <th>Auditor</th>
+                      <th>Progress</th>
+                      <th>Deadline</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="projectsTable"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 5: Standards -->
+        <div id="standards" class="content-section">
+          <div class="page-header">
+            <div>
+              <h1>Standards Management</h1>
+              <p>Manage compliance standards and requirements.</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <h3>AIS-189 Requirements (15 shown of 450)</h3>
+            </div>
+            <div class="card-body">
+              <div class="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Code</th>
+                      <th>Title</th>
+                      <th>Category</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody id="standardsTable"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 6: Reports -->
+        <div id="reports" class="content-section">
+          <div class="page-header">
+            <div>
+              <h1>Reports & Analytics</h1>
+              <p>System-wide reports and compliance analytics.</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body" style="text-align: center; padding: 3rem">
+              <h3> Reports Coming Soon</h3>
+              <p style="color: var(--text-light); margin-top: 1rem">
+                Advanced analytics and reporting features will be available in
+                the next release.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 7: Settings -->
+        <div id="settings" class="content-section">
+          <div class="page-header">
+            <div>
+              <h1>System Settings</h1>
+              <p>Configure system-wide settings and preferences.</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body" style="text-align: center; padding: 3rem">
+              <h3> Settings Coming Soon</h3>
+              <p style="color: var(--text-light); margin-top: 1rem">
+                System configuration options will be available in the next
+                release.
+              </p>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Add Organization Modal -->
+    <div id="addOrgModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Add New Organization</h3>
+          <button class="modal-close" onclick="hideModal('addOrgModal')">
+            ×
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="addOrgForm">
+            <div class="form-group">
+              <label>Organization Name *</label>
+              <input
+                type="text"
+                required
+                placeholder="e.g., Maruti Suzuki India Ltd"
+              />
+            </div>
+            <div class="form-group">
+              <label>Code *</label>
+              <input
+                type="text"
+                required
+                placeholder="e.g., MSIL"
+                maxlength="10"
+              />
+            </div>
+            <div class="form-group">
+              <label>Contact Email *</label>
+              <input
+                type="email"
+                required
+                placeholder="compliance@organization.com"
+              />
+            </div>
+            <div class="form-group">
+              <label>Contact Phone</label>
+              <input type="tel" placeholder="+91-XXX-XXXXXXX" />
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="hideModal('addOrgModal')">
+            Cancel
+          </button>
+          <button
+            class="btn btn-primary"
+            onclick="
+              showSuccessToast('Organization created!');
+              hideModal('addOrgModal');
+            "
+          >
+            Create Organization
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div id="addUserModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Add New User</h3>
+          <button class="modal-close" onclick="hideModal('addUserModal')">
+            ×
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="addUserForm">
+            <div class="form-group">
+              <label>First Name *</label>
+              <input type="text" required />
+            </div>
+            <div class="form-group">
+              <label>Last Name *</label>
+              <input type="text" required />
+            </div>
+            <div class="form-group">
+              <label>Email *</label>
+              <input type="email" required />
+            </div>
+            <div class="form-group">
+              <label>Password *</label>
+              <input type="password" required />
+            </div>
+            <div class="form-group">
+              <label>Role *</label>
+              <select required id="newUserRole" onchange="toggleOrgField()">
+                <option value="">Select Role</option>
+                <option value="SUPER_ADMIN">Super Admin</option>
+                <option value="CIRT_ADMIN">CIRT Admin</option>
+                <option value="OEM">OEM</option>
+                <option value="PENTESTER">Pentester</option>
+              </select>
+            </div>
+            <div
+              class="form-group"
+              id="orgFieldContainer"
+              style="display: none"
+            >
+              <label>Organization *</label>
+              <select id="newUserOrg">
+                <option value="">Select Organization</option>
+              </select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="hideModal('addUserModal')">
+            Cancel
+          </button>
+          <button
+            class="btn btn-primary"
+            onclick="
+              showSuccessToast('User created!');
+              hideModal('addUserModal');
+            "
+          >
+            Create User
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="../js/data.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/router.js"></script>
+    <script>
+      const currentUser = checkAuth();
+      if (currentUser)
+        document.getElementById('userName').textContent =
+          currentUser.firstName + ' ' + currentUser.lastName;
+
+      // Load dashboard
+      function load_dashboard() {
+        const tbody = document.getElementById('dashboardOrgsTable');
+        tbody.innerHTML = '';
+        MOCK_DATA.organizations.slice(0, 3).forEach((org) => {
+          tbody.innerHTML += `<tr><td><strong>${org.name}</strong></td><td><span class="badge badge-info">${org.code}</span></td><td>${org.activeProjects}</td><td><div class="progress-bar" style="height:20px;width:150px;"><div class="progress-fill" style="width:${org.completionRate}%;">${org.completionRate}%</div></div></td><td>${org.contactEmail}</td></tr>`;
+        });
+        const activityDiv = document.getElementById('recentActivity');
+        activityDiv.innerHTML = '';
+        MOCK_DATA.activities.forEach((activity) => {
+          activityDiv.innerHTML += `<div style="padding:1rem;border-bottom:1px solid var(--border);"><div style="display:flex;justify-content:space-between;"><div><strong>${activity.user}</strong> ${activity.action}<div style="color:var(--text-light);font-size:0.9rem;margin-top:0.25rem;">${activity.details}</div></div><div style="color:var(--text-light);font-size:0.875rem;">${activity.timestamp}</div></div></div>`;
+        });
+      }
+
+      // Load organizations
+      function load_organizations() {
+        const tbody = document.getElementById('organizationsTable');
+        tbody.innerHTML = '';
+        MOCK_DATA.organizations.forEach((org) => {
+          tbody.innerHTML += `<tr><td><strong>${org.name}</strong></td><td><span class="badge badge-info">${org.code}</span></td><td>${org.contactEmail}<br><small>${org.contactPhone || 'N/A'}</small></td><td>${org.activeProjects}</td><td><div class="progress-bar" style="height:20px;width:120px;"><div class="progress-fill" style="width:${org.completionRate}%;">${org.completionRate}%</div></div></td><td><span class="badge ${org.isActive ? 'badge-success' : 'badge-gray'}">${org.isActive ? 'Active' : 'Inactive'}</span></td><td><button class="btn btn-secondary btn-sm">Edit</button> <button class="btn btn-sm btn-danger">Delete</button></td></tr>`;
+        });
+      }
+
+      // Load users
+      function load_users() {
+        const tbody = document.getElementById('usersTable');
+        const roleFilter = document.getElementById('roleFilter').value;
+        const statusFilter = document.getElementById('statusFilter').value;
+        let users = MOCK_DATA.users;
+        if (roleFilter) users = users.filter((u) => u.role === roleFilter);
+        if (statusFilter)
+          users = users.filter((u) => u.isActive === (statusFilter === 'true'));
+        tbody.innerHTML = '';
+        users.forEach((user) => {
+          tbody.innerHTML += `<tr><td><strong>${user.firstName} ${user.lastName}</strong></td><td>${user.email}</td><td><span class="badge badge-info">${user.role}</span></td><td>${user.organization || '-'}</td><td><span class="badge ${user.isActive ? 'badge-success' : 'badge-gray'}">${user.isActive ? 'Active' : 'Inactive'}</span></td><td><button class="btn btn-secondary btn-sm">Edit</button> <button class="btn btn-sm btn-${user.isActive ? 'warning' : 'success'}">${user.isActive ? 'Deactivate' : 'Activate'}</button></td></tr>`;
+        });
+      }
+
+      // Load projects
+      function load_projects() {
+        const tbody = document.getElementById('projectsTable');
+        tbody.innerHTML = '';
+        MOCK_DATA.projects.forEach((project) => {
+          const daysLeft = getDaysRemaining(project.deadline);
+          tbody.innerHTML += `<tr><td><strong>${project.name}</strong></td><td>${project.organization}</td><td>${project.vehicleModel}</td><td>${project.assignedAuditor}</td><td><div class="progress-bar" style="height:20px;width:150px;"><div class="progress-fill" style="width:${project.completionPercentage}%;">${project.completionPercentage}%</div></div></td><td>${formatDate(project.deadline)}<br><small>${daysLeft} days left</small></td><td><span class="badge badge-success">${project.status}</span></td></tr>`;
+        });
+      }
+
+      // Load standards
+      function load_standards() {
+        const tbody = document.getElementById('standardsTable');
+        tbody.innerHTML = '';
+        MOCK_DATA.requirements.forEach((req) => {
+          tbody.innerHTML += `<tr><td><code>${req.code}</code></td><td><strong>${req.title}</strong></td><td>${req.category}</td><td>${req.description}</td></tr>`;
+        });
+      }
+
+      function toggleOrgField() {
+        const role = document.getElementById('newUserRole').value;
+        const orgField = document.getElementById('orgFieldContainer');
+        if (role === 'OEM') {
+          orgField.style.display = 'block';
+          const orgSelect = document.getElementById('newUserOrg');
+          orgSelect.innerHTML = '<option value="">Select Organization</option>';
+          MOCK_DATA.organizations.forEach((org) => {
+            orgSelect.innerHTML += `<option value="${org.id}">${org.name}</option>`;
+          });
+        } else {
+          orgField.style.display = 'none';
+        }
+      }
+
+      load_dashboard();
+    </script>
+  </body>
+</html>

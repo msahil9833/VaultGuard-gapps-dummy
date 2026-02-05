@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TARA - VaultGuard</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <style>
+        .wizard-container {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        .wizard-steps {
+            display: flex;
+            background: var(--light);
+            border-bottom: 2px solid var(--border);
+            padding: 0;
+        }
+        .wizard-step {
+            flex: 1;
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .wizard-step::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid var(--light);
+            border-top: 20px solid transparent;
+            border-bottom: 20px solid transparent;
+            z-index: 1;
+        }
+        .wizard-step:last-child::after {
+            display: none;
+        }
+        .wizard-step.completed {
+            background: var(--success);
+            color: white;
+        }
+        .wizard-step.completed::after {
+            border-left-color: var(--success);
+        }
+        .wizard-step.active {
+            background: var(--primary);
+            color: white;
+        }
+        .wizard-step.active::after {
+            border-left-color: var(--primary);
+        }
+        .step-number {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            line-height: 32px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        .step-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .wizard-content {
+            padding: 2rem;
+        }
+        .step-panel {
+            display: none;
+        }
+        .step-panel.active {
+            display: block;
+        }
+        .risk-matrix {
+            display: grid;
+            grid-template-columns: 60px repeat(5, 1fr);
+            gap: 2px;
+            margin: 2rem 0;
+        }
+        .matrix-cell {
+            padding: 1rem;
+            text-align: center;
+            font-weight: 600;
+            border: 1px solid var(--border);
+        }
+        .matrix-header {
+            background: var(--light);
+            font-size: 0.875rem;
+        }
+        .matrix-risk-1 { background: #10b981; color: white; }
+        .matrix-risk-2 { background: #84cc16; color: white; }
+        .matrix-risk-3 { background: #fbbf24; }
+        .matrix-risk-4 { background: #f59e0b; color: white; }
+        .matrix-risk-5 { background: #ef4444; color: white; }
+        .asset-card {
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .asset-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+        }
+        .asset-card.selected {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>VaultGuard</h2>
+                <p class="tagline">Securing Tomorrow's Mobility</p>
+                <div class="user-info">
+                    <div class="user-avatar">RK</div>
+                    <div class="user-details">
+                        <div class="name">Rajesh Kumar</div>
+                        <div class="role">OEM - Maruti Suzuki</div>
+                    </div>
+                </div>
+            </div>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item"><a href="oem.html">Dashboard</a></li>
+                    <li class="nav-item"><a href="oem-coc-management.html">COC Management</a></li>
+                    <li class="nav-item"><a href="oem-tara.html" class="active">TARA</a></li>
+                </ul>
+            </nav>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </aside>
+        
+        <main class="main-content">
+            <span class="back-button" onclick="window.location.href='oem.html'">← Back to Dashboard</span>
+            
+            <div class="page-header">
+                <div>
+                    <h1>TARA - Threat Assessment & Risk Analysis</h1>
+                    <p>Systematic approach to identify and mitigate cybersecurity risks in your vehicle.</p>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button class="btn btn-secondary" onclick="saveTARA()">Save Progress</button>
+                    <button class="btn btn-success" onclick="generateReport()">Generate Report</button>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 1.5rem;">
+                <div class="card-body">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong>TARA Number:</strong> <code style="margin-left: 0.5rem;">TARA-MSIL-2026-001</code>
+                            <span style="margin-left: 2rem;"><strong>Vehicle:</strong> Swift Dzire 2026</span>
+                        </div>
+                        <span class="badge badge-success">Completed</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="wizard-container">
+                <div class="wizard-steps">
+                    <div class="wizard-step completed" onclick="goToStep(1)">
+                        <div class="step-number">1</div>
+                        <div class="step-title">Asset Identification</div>
+                    </div>
+                    <div class="wizard-step completed" onclick="goToStep(2)">
+                        <div class="step-number">2</div>
+                        <div class="step-title">Threat Analysis</div>
+                    </div>
+                    <div class="wizard-step completed" onclick="goToStep(3)">
+                        <div class="step-number">3</div>
+                        <div class="step-title">Risk Assessment</div>
+                    </div>
+                    <div class="wizard-step active" onclick="goToStep(4)">
+                        <div class="step-number">4</div>
+                        <div class="step-title">Risk Treatment</div>
+                    </div>
+                </div>
+
+                <div class="wizard-content">
+                    <!-- STEP 1: Asset Identification -->
+                    <div id="step1" class="step-panel">
+                        <h3 style="margin-bottom: 1.5rem;">Step 1: Asset Identification</h3>
+                        <p style="color: var(--text-light); margin-bottom: 2rem;">Identify all assets (ECUs, networks, interfaces) that need security assessment.</p>
+
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <h4>Identified Assets (5)</h4>
+                            <button class="btn btn-primary" onclick="showModal('addAssetModal')">+ Add Asset</button>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-body">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Asset Name</th>
+                                            <th>Type</th>
+                                            <th>Criticality</th>
+                                            <th>Description</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="assetsTable">
+                                        <tr>
+                                            <td><strong>Engine Control Unit (ECU)</strong></td>
+                                            <td><span class="badge badge-info">ECU</span></td>
+                                            <td><span class="badge badge-danger">HIGH</span></td>
+                                            <td>Controls engine operations and performance</td>
+                                            <td><button class="btn btn-secondary btn-sm">Edit</button> <button class="btn btn-danger btn-sm">Delete</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Telematics Unit</strong></td>
+                                            <td><span class="badge badge-info">ECU</span></td>
+                                            <td><span class="badge badge-warning">MEDIUM</span></td>
+                                            <td>4G connectivity and remote diagnostics</td>
+                                            <td><button class="btn btn-secondary btn-sm">Edit</button> <button class="btn btn-danger btn-sm">Delete</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>CAN Bus</strong></td>
+                                            <td><span class="badge badge-primary">NETWORK</span></td>
+                                            <td><span class="badge badge-danger">HIGH</span></td>
+                                            <td>Primary communication network</td>
+                                            <td><button class="btn btn-secondary btn-sm">Edit</button> <button class="btn btn-danger btn-sm">Delete</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>OBD-II Port</strong></td>
+                                            <td><span class="badge badge-success">INTERFACE</span></td>
+                                            <td><span class="badge badge-warning">MEDIUM</span></td>
+                                            <td>Diagnostic interface port</td>
+                                            <td><button class="btn btn-secondary btn-sm">Edit</button> <button class="btn btn-danger btn-sm">Delete</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>WiFi Module</strong></td>
+                                            <td><span class="badge badge-success">INTERFACE</span></td>
+                                            <td><span class="badge badge-warning">MEDIUM</span></td>
+                                            <td>WiFi hotspot functionality</td>
+                                            <td><button class="btn btn-secondary btn-sm">Edit</button> <button class="btn btn-danger btn-sm">Delete</button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div style="text-align: right; margin-top: 2rem;">
+                            <button class="btn btn-primary" onclick="nextStep()">Next: Threat Analysis →</button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 2: Threat Analysis -->
+                    <div id="step2" class="step-panel">
+                        <h3 style="margin-bottom: 1.5rem;">Step 2: Threat Analysis</h3>
+                        <p style="color: var(--text-light); margin-bottom: 2rem;">Identify potential threats for each asset using STRIDE methodology.</p>
+
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <h4>Identified Threats (4)</h4>
+                            <button class="btn btn-primary" onclick="showModal('addThreatModal')">+ Add Threat</button>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-body">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Threat</th>
+                                            <th>Asset</th>
+                                            <th>STRIDE Category</th>
+                                            <th>Description</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Unauthorized ECU Reprogramming</strong></td>
+                                            <td>Engine ECU</td>
+                                            <td><span class="badge badge-danger">Tampering</span></td>
+                                            <td>Attacker modifies ECU firmware</td>
+                                            <td><button class="btn btn-secondary btn-sm">Edit</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>CAN Bus Message Injection</strong></td>
+                                            <td>CAN Bus</td>
+                                            <td><span class="badge badge-warning">Spoofing</span></td>
+                                            <td>Injecting malicious CAN messages</td>
+                                            <td><button class="btn btn-secondary btn-sm">Edit</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>OBD Port Physical Access</strong></td>
+                                            <td>OBD-II Port</td>
+                                            <td><span class="badge badge-info">Elevation</span></td>
+                                            <td>Unauthorized diagnostic access</td>
+                                            <td><button class="btn btn-secondary btn-sm">Edit</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>WiFi Man-in-the-Middle</strong></td>
+                                            <td>WiFi Module</td>
+                                            <td><span class="badge badge-warning">Spoofing</span></td>
+                                            <td>Intercepting WiFi communications</td>
+                                            <td><button class="btn btn-secondary btn-sm">Edit</button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                            <button class="btn btn-secondary" onclick="previousStep()">← Previous</button>
+                            <button class="btn btn-primary" onclick="nextStep()">Next: Risk Assessment →</button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 3: Risk Assessment -->
+                    <div id="step3" class="step-panel">
+                        <h3 style="margin-bottom: 1.5rem;">Step 3: Risk Assessment</h3>
+                        <p style="color: var(--text-light); margin-bottom: 2rem;">Assess the risk level for each threat using likelihood and impact.</p>
+
+                        <div class="card" style="margin-bottom: 2rem;">
+                            <div class="card-header"><h4>Risk Assessment Matrix (5x5)</h4></div>
+                            <div class="card-body">
+                                <div class="risk-matrix">
+                                    <div class="matrix-cell matrix-header"></div>
+                                    <div class="matrix-cell matrix-header">1<br>Rare</div>
+                                    <div class="matrix-cell matrix-header">2<br>Unlikely</div>
+                                    <div class="matrix-cell matrix-header">3<br>Possible</div>
+                                    <div class="matrix-cell matrix-header">4<br>Likely</div>
+                                    <div class="matrix-cell matrix-header">5<br>Certain</div>
+                                    
+                                    <div class="matrix-cell matrix-header">5<br>Critical</div>
+                                    <div class="matrix-cell matrix-risk-3">5</div>
+                                    <div class="matrix-cell matrix-risk-4">10</div>
+                                    <div class="matrix-cell matrix-risk-5">15</div>
+                                    <div class="matrix-cell matrix-risk-5">20</div>
+                                    <div class="matrix-cell matrix-risk-5">25</div>
+                                    
+                                    <div class="matrix-cell matrix-header">4<br>High</div>
+                                    <div class="matrix-cell matrix-risk-2">4</div>
+                                    <div class="matrix-cell matrix-risk-3">8</div>
+                                    <div class="matrix-cell matrix-risk-4">12</div>
+                                    <div class="matrix-cell matrix-risk-5">16</div>
+                                    <div class="matrix-cell matrix-risk-5">20</div>
+                                    
+                                    <div class="matrix-cell matrix-header">3<br>Medium</div>
+                                    <div class="matrix-cell matrix-risk-1">3</div>
+                                    <div class="matrix-cell matrix-risk-2">6</div>
+                                    <div class="matrix-cell matrix-risk-3">9</div>
+                                    <div class="matrix-cell matrix-risk-4">12</div>
+                                    <div class="matrix-cell matrix-risk-5">15</div>
+                                    
+                                    <div class="matrix-cell matrix-header">2<br>Low</div>
+                                    <div class="matrix-cell matrix-risk-1">2</div>
+                                    <div class="matrix-cell matrix-risk-1">4</div>
+                                    <div class="matrix-cell matrix-risk-2">6</div>
+                                    <div class="matrix-cell matrix-risk-3">8</div>
+                                    <div class="matrix-cell matrix-risk-4">10</div>
+                                    
+                                    <div class="matrix-cell matrix-header">1<br>Minimal</div>
+                                    <div class="matrix-cell matrix-risk-1">1</div>
+                                    <div class="matrix-cell matrix-risk-1">2</div>
+                                    <div class="matrix-cell matrix-risk-1">3</div>
+                                    <div class="matrix-cell matrix-risk-2">4</div>
+                                    <div class="matrix-cell matrix-risk-3">5</div>
+                                </div>
+                                <div style="display: flex; gap: 2rem; justify-content: center; margin-top: 1rem;">
+                                    <div><span class="badge badge-success">1-4: LOW</span></div>
+                                    <div><span class="badge" style="background: #84cc16; color: white;">5-8: MEDIUM</span></div>
+                                    <div><span class="badge badge-warning">9-15: HIGH</span></div>
+                                    <div><span class="badge badge-danger">16-25: CRITICAL</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header"><h4>Risk Assessment Results</h4></div>
+                            <div class="card-body">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Threat</th>
+                                            <th>Likelihood</th>
+                                            <th>Impact</th>
+                                            <th>Risk Score</th>
+                                            <th>Risk Level</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>CAN Bus Message Injection</strong></td>
+                                            <td>4 (Likely)</td>
+                                            <td>4 (High)</td>
+                                            <td><strong>16</strong></td>
+                                            <td><span class="badge badge-danger">HIGH</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Unauthorized ECU Reprogramming</strong></td>
+                                            <td>3 (Possible)</td>
+                                            <td>5 (Critical)</td>
+                                            <td><strong>15</strong></td>
+                                            <td><span class="badge badge-danger">HIGH</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>OBD Port Physical Access</strong></td>
+                                            <td>3 (Possible)</td>
+                                            <td>3 (Medium)</td>
+                                            <td><strong>9</strong></td>
+                                            <td><span class="badge badge-warning">MEDIUM</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>WiFi Man-in-the-Middle</strong></td>
+                                            <td>2 (Unlikely)</td>
+                                            <td>3 (Medium)</td>
+                                            <td><strong>6</strong></td>
+                                            <td><span class="badge" style="background: #84cc16; color: white;">LOW</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                            <button class="btn btn-secondary" onclick="previousStep()">← Previous</button>
+                            <button class="btn btn-primary" onclick="nextStep()">Next: Risk Treatment →</button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 4: Risk Treatment -->
+                    <div id="step4" class="step-panel active">
+                        <h3 style="margin-bottom: 1.5rem;">Step 4: Risk Treatment & Controls</h3>
+                        <p style="color: var(--text-light); margin-bottom: 2rem;">Define controls to mitigate identified risks.</p>
+
+                        <div class="stats-grid" style="margin-bottom: 2rem;">
+                            <div class="stat-card">
+                                <div class="stat-card-header">
+                                    <div><div class="stat-label">Total Risks</div><div class="stat-value">4</div></div>
+                                    <div class="stat-icon warning"></div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-card-header">
+                                    <div><div class="stat-label">High Risks</div><div class="stat-value">2</div></div>
+                                    <div class="stat-icon danger"></div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-card-header">
+                                    <div><div class="stat-label">Controls Implemented</div><div class="stat-value">2</div></div>
+                                    <div class="stat-icon success"></div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-card-header">
+                                    <div><div class="stat-label">Controls Planned</div><div class="stat-value">1</div></div>
+                                    <div class="stat-icon info"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h4>Risk Treatment Plan</h4>
+                                <button class="btn btn-primary btn-sm" onclick="showModal('addControlModal')">+ Add Control</button>
+                            </div>
+                            <div class="card-body">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Threat</th>
+                                            <th>Original Risk</th>
+                                            <th>Control Measure</th>
+                                            <th>Status</th>
+                                            <th>Residual Risk</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Unauthorized ECU Reprogramming</strong></td>
+                                            <td><span class="badge badge-danger">HIGH (15)</span></td>
+                                            <td>Secure Boot Implementation</td>
+                                            <td><span class="badge badge-success">Implemented</span></td>
+                                            <td><span class="badge" style="background: #84cc16; color: white;">LOW (3)</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>CAN Bus Message Injection</strong></td>
+                                            <td><span class="badge badge-danger">HIGH (16)</span></td>
+                                            <td>CAN Message Authentication (MAC)</td>
+                                            <td><span class="badge badge-warning">Planned</span></td>
+                                            <td><span class="badge badge-warning">MEDIUM (8)</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>OBD Port Physical Access</strong></td>
+                                            <td><span class="badge badge-warning">MEDIUM (9)</span></td>
+                                            <td>Physical Access Controls</td>
+                                            <td><span class="badge badge-success">Implemented</span></td>
+                                            <td><span class="badge" style="background: #84cc16; color: white;">LOW (4)</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>WiFi Man-in-the-Middle</strong></td>
+                                            <td><span class="badge" style="background: #84cc16; color: white;">LOW (6)</span></td>
+                                            <td>WPA3 Encryption</td>
+                                            <td><span class="badge badge-success">Implemented</span></td>
+                                            <td><span class="badge badge-success">LOW (2)</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                            <button class="btn btn-secondary" onclick="previousStep()">← Previous</button>
+                            <button class="btn btn-success" onclick="completeTARA()">✓ Complete TARA</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="addAssetModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Asset</h3>
+                <button class="modal-close" onclick="hideModal('addAssetModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label>Asset Name *</label>
+                        <input type="text" required placeholder="e.g., Gateway ECU">
+                    </div>
+                    <div class="form-group">
+                        <label>Asset Type *</label>
+                        <select required>
+                            <option value="">-- Select Type --</option>
+                            <option>ECU</option>
+                            <option>NETWORK</option>
+                            <option>INTERFACE</option>
+                            <option>SOFTWARE</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Criticality *</label>
+                        <select required>
+                            <option value="">-- Select Criticality --</option>
+                            <option>HIGH</option>
+                            <option>MEDIUM</option>
+                            <option>LOW</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea rows="3" placeholder="Brief description..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="hideModal('addAssetModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="hideModal('addAssetModal'); showSuccessToast('Asset added!')">Add Asset</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/data.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/tara-engine.js"></script>
+    <script>
+        const currentUser = checkAuth();
+        let currentStep = 4;
+
+        function goToStep(step) {
+            currentStep = step;
+            // Hide all panels
+            document.querySelectorAll('.step-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            // Show selected
+            document.getElementById('step' + step).classList.add('active');
+            
+            // Update wizard step classes
+            document.querySelectorAll('.wizard-step').forEach((el, index) => {
+                el.classList.remove('active', 'completed');
+                if (index + 1 < step) {
+                    el.classList.add('completed');
+                } else if (index + 1 === step) {
+                    el.classList.add('active');
+                }
+            });
+        }
+
+        function nextStep() {
+            if (currentStep < 4) {
+                goToStep(currentStep + 1);
+            }
+        }
+
+        function previousStep() {
+            if (currentStep > 1) {
+                goToStep(currentStep - 1);
+            }
+        }
+
+        function saveTARA() {
+            showSuccessToast('TARA progress saved!');
+        }
+
+        function generateReport() {
+            showSuccessToast('Generating TARA report PDF...');
+        }
+
+        function completeTARA() {
+            if (confirm('Mark this TARA as complete? You can still edit it later.')) {
+                showSuccessToast('TARA completed successfully!');
+                setTimeout(() => window.location.href = 'oem-coc-management.html', 1500);
+            }
+        }
+    </script>
+</body>
+</html>

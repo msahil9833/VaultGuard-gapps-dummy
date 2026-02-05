@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COC Management - VaultGuard</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>VaultGuard</h2>
+                <p class="tagline">Securing Tomorrow's Mobility</p>
+                <div class="user-info">
+                    <div class="user-avatar">RK</div>
+                    <div class="user-details">
+                        <div class="name" id="userName">Rajesh Kumar</div>
+                        <div class="role">OEM - Maruti Suzuki</div>
+                    </div>
+                </div>
+            </div>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item"><a href="oem.html">Dashboard</a></li>
+                    <li class="nav-item"><a href="oem-coc-management.html" class="active">COC Management</a></li>
+                    <li class="nav-item"><a href="oem-tara.html">TARA</a></li>
+                    <li class="nav-item"><a href="oem.html#submissions">Submissions</a></li>
+                </ul>
+            </nav>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </aside>
+        
+        <main class="main-content">
+            <div class="page-header">
+                <div>
+                    <h1>Certificate of Compliance (COC) Management</h1>
+                    <p>Create and manage COC documents for vehicle type approval.</p>
+                </div>
+                <button class="btn btn-primary" onclick="showModal('createCOCModal')">+ Create New COC</button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div><div class="stat-label">Total COCs</div><div class="stat-value">2</div></div>
+                        <div class="stat-icon primary"></div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div><div class="stat-label">Draft</div><div class="stat-value">1</div></div>
+                        <div class="stat-icon warning"></div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div><div class="stat-label">Submitted</div><div class="stat-value">1</div></div>
+                        <div class="stat-icon success"></div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div><div class="stat-label">Approved</div><div class="stat-value">0</div></div>
+                        <div class="stat-icon info"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>My COC Documents</h3>
+                </div>
+                <div class="card-body">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>COC Number</th>
+                                    <th>Vehicle Model</th>
+                                    <th>Created Date</th>
+                                    <th>Progress</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cocTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>What is COC?</h3>
+                </div>
+                <div class="card-body">
+                    <p><strong>Certificate of Compliance (COC)</strong> is a comprehensive document that demonstrates your vehicle's compliance with AIS-189 cybersecurity standards.</p>
+                    <div style="margin-top: 1rem; padding: 1rem; background: var(--light); border-radius: var(--radius-md);">
+                        <h4 style="margin-bottom: 0.5rem;">COC contains 10 sections:</h4>
+                        <ol style="margin-left: 1.5rem; line-height: 1.8;">
+                            <li><strong>Vehicle Information</strong> - Basic vehicle details and specifications</li>
+                            <li><strong>CSMS Policy</strong> - Cybersecurity Management System documentation</li>
+                            <li><strong>TARA Results</strong> - Threat Analysis and Risk Assessment outcomes</li>
+                            <li><strong>Security Controls</strong> - Implemented security measures</li>
+                            <li><strong>Testing Evidence</strong> - Penetration test and vulnerability scan results</li>
+                            <li><strong>Incident Response</strong> - Incident handling procedures</li>
+                            <li><strong>Vulnerability Management</strong> - Ongoing vulnerability handling process</li>
+                            <li><strong>Supply Chain Security</strong> - Third-party security assessments</li>
+                            <li><strong>Evidence Links</strong> - References to all uploaded evidence</li>
+                            <li><strong>Audit Trail</strong> - Complete history of all changes (auto-generated)</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Create COC Modal -->
+    <div id="createCOCModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Create New COC</h3>
+                <button class="modal-close" onclick="hideModal('createCOCModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="createCOCForm">
+                    <div class="form-group">
+                        <label>Select Project *</label>
+                        <select id="cocProject" required>
+                            <option value="">-- Select Project --</option>
+                            <option value="1">Swift Dzire 2026 - AIS-189 Compliance</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Vehicle Model *</label>
+                        <input type="text" id="cocVehicleModel" value="Swift Dzire 2026" required readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea rows="3" placeholder="Brief description of this COC..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="hideModal('createCOCModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="createCOC()">Create COC</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/data.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/utils.js"></script>
+    <script>
+        const currentUser = checkAuth();
+
+        function loadCOCs() {
+            const tbody = document.getElementById('cocTable');
+            tbody.innerHTML = '';
+            
+            MOCK_DATA.cocs.forEach(coc => {
+                const statusBadge = {
+                    'DRAFT': 'badge-warning',
+                    'SUBMITTED': 'badge-info',
+                    'UNDER_REVIEW': 'badge-warning',
+                    'APPROVED': 'badge-success',
+                    'REJECTED': 'badge-danger'
+                }[coc.status] || 'badge-gray';
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td><code>${coc.cocNumber}</code></td>
+                        <td><strong>${coc.vehicleModel}</strong><br><small>${coc.organization}</small></td>
+                        <td>${formatDate(coc.createdDate)}</td>
+                        <td>
+                            <div class="progress-bar" style="height:20px;width:150px;">
+                                <div class="progress-fill" style="width:${coc.completionPercentage}%;">
+                                    ${coc.completionPercentage}%
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge ${statusBadge}">${coc.status}</span></td>
+                        <td>
+                            <button class="btn btn-primary btn-sm" onclick="viewCOC(${coc.id})"> Edit</button>
+                            <button class="btn btn-secondary btn-sm" onclick="downloadCOC(${coc.id})"> Download</button>
+                            ${coc.status === 'DRAFT' ? '<button class="btn btn-success btn-sm" onclick="submitCOC(' + coc.id + ')">✓ Submit</button>' : ''}
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function viewCOC(cocId) {
+            window.location.href = `oem-coc-detail.html?id=${cocId}`;
+        }
+
+        function downloadCOC(cocId) {
+            showSuccessToast('Downloading COC PDF...');
+        }
+
+        function submitCOC(cocId) {
+            if (confirm('Submit this COC for review? You cannot edit after submission.')) {
+                const coc = MOCK_DATA.cocs.find(c => c.id === cocId);
+                if (coc) {
+                    coc.status = 'SUBMITTED';
+                    showSuccessToast('COC submitted successfully! Auditor will be notified.');
+                    setTimeout(() => location.reload(), 1000);
+                }
+            }
+        }
+
+        function createCOC() {
+            const projectId = document.getElementById('cocProject').value;
+            if (!projectId) {
+                showErrorToast('Please select a project');
+                return;
+            }
+            
+            const newCOC = {
+                id: MOCK_DATA.cocs.length + 1,
+                cocNumber: `COC-MSIL-2026-${String(MOCK_DATA.cocs.length + 1).padStart(3, '0')}`,
+                projectId: parseInt(projectId),
+                vehicleModel: 'Swift Dzire 2026',
+                organization: 'Maruti Suzuki India Ltd',
+                createdDate: new Date().toISOString().split('T')[0],
+                status: 'DRAFT',
+                completionPercentage: 0,
+                tabs: {}
+            };
+            
+            MOCK_DATA.cocs.push(newCOC);
+            hideModal('createCOCModal');
+            showSuccessToast('COC created successfully!');
+            setTimeout(() => viewCOC(newCOC.id), 1000);
+        }
+
+        loadCOCs();
+    </script>
+</body>
+</html>

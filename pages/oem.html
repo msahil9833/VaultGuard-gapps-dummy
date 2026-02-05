@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OEM Dashboard - VaultGuard</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/dashboard.css" />
+  </head>
+  <body>
+    <div class="dashboard-layout">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <h2>VaultGuard</h2>
+          <p class="tagline">Securing Tomorrow's Mobility</p>
+          <div class="user-info">
+            <div class="user-avatar">RK</div>
+            <div class="user-details">
+              <div class="name" id="userName">Rajesh Kumar</div>
+              <div class="role">OEM - Maruti Suzuki</div>
+            </div>
+          </div>
+        </div>
+        <nav>
+          <ul class="nav-menu">
+            <li class="nav-item">
+              <a class="nav-link active" data-section="dashboard"
+                >Dashboard</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                href="oem-coc-management.html"
+                style="
+                  color: inherit;
+                  text-decoration: none;
+                  display: block;
+                  padding: 0.75rem 1rem;
+                "
+                >COC Management</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                href="oem-tara.html"
+                style="
+                  color: inherit;
+                  text-decoration: none;
+                  display: block;
+                  padding: 0.75rem 1rem;
+                "
+                >TARA</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-section="project-detail"
+                >Project Detail</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-section="submissions"
+                >My Submissions</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-section="rejected-items"
+                >Rejected Items</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-section="progress-report"
+                >Progress Report</a
+              >
+            </li>
+          </ul>
+        </nav>
+
+        <button class="logout-btn" onclick="logout()">Logout</button>
+      </aside>
+
+      <main class="main-content">
+        <!-- Dashboard -->
+        <div id="dashboard" class="content-section active">
+          <div class="page-header">
+            <div>
+              <h1>OEM Dashboard</h1>
+              <p>Manage your compliance projects and submit evidence.</p>
+            </div>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <div>
+                  <div class="stat-label">Active Projects</div>
+                  <div class="stat-value">3</div>
+                </div>
+                <div class="stat-icon primary"></div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <div>
+                  <div class="stat-label">Completed Requirements</div>
+                  <div class="stat-value">348</div>
+                </div>
+                <div class="stat-icon success"></div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <div>
+                  <div class="stat-label">Under Review</div>
+                  <div class="stat-value">23</div>
+                </div>
+                <div class="stat-icon warning"></div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <div>
+                  <div class="stat-label">Rejected</div>
+                  <div class="stat-value">12</div>
+                </div>
+                <div class="stat-icon danger"></div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <h3>AIS-189 Compliance - Swift Dzire 2026</h3>
+              <button
+                class="btn btn-primary btn-sm"
+                onclick="showModal('uploadModal')"
+              >
+                Upload Evidence
+              </button>
+            </div>
+            <div class="card-body">
+              <div class="progress-container">
+                <div class="progress-header">
+                  <span>Overall Progress: 348/450 requirements completed</span
+                  ><strong>77.3%</strong>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 77.3%">77.3%</div>
+                </div>
+              </div>
+              <div style="margin-top: 1.5rem; display: flex; gap: 1rem">
+                <span class="badge badge-success">348 Approved</span>
+                <span class="badge badge-warning"> 23 Under Review</span>
+                <span class="badge badge-danger"> 12 Rejected</span>
+                <span class="badge badge-gray"> 67 Not Submitted</span>
+              </div>
+              <div
+                style="
+                  margin-top: 1.5rem;
+                  padding: 1rem;
+                  background: var(--light);
+                  border-radius: var(--radius-md);
+                "
+              >
+                <strong> Deadline:</strong> March 31, 2026 (
+                <script>
+                  document.write(getDaysRemaining('2026-03-31'));
+                </script>
+                days remaining)
+              </div>
+              <div style="margin-top: 1rem">
+                <button
+                  class="btn btn-primary"
+                  onclick="Router.navigateTo('project-detail')"
+                >
+                  View Full Requirements List →
+                </button>
+              </div>
+              <div class="card">
+                <div class="card-header"><h3>Quick Actions</h3></div>
+                <div class="card-body">
+                  <div
+                    style="
+                      display: grid;
+                      grid-template-columns: repeat(3, 1fr);
+                      gap: 1rem;
+                    "
+                  >
+                    <a
+                      href="oem-coc-management.html"
+                      style="text-decoration: none"
+                    >
+                      <div
+                        style="
+                          padding: 1.5rem;
+                          border: 2px solid var(--border);
+                          border-radius: var(--radius-md);
+                          text-align: center;
+                          cursor: pointer;
+                          transition: all 0.2s;
+                        "
+                        onmouseover="this.style.borderColor = 'var(--primary)'"
+                        onmouseout="this.style.borderColor = 'var(--border)'"
+                      >
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem">
+                          
+                        </div>
+                        <strong style="color: var(--text)"
+                          >COC Management</strong
+                        >
+                        <div
+                          style="
+                            color: var(--text-light);
+                            font-size: 0.875rem;
+                            margin-top: 0.25rem;
+                          "
+                        >
+                          Create & manage COC
+                        </div>
+                      </div>
+                    </a>
+                    <a href="oem-tara.html" style="text-decoration: none">
+                      <div
+                        style="
+                          padding: 1.5rem;
+                          border: 2px solid var(--border);
+                          border-radius: var(--radius-md);
+                          text-align: center;
+                          cursor: pointer;
+                          transition: all 0.2s;
+                        "
+                        onmouseover="this.style.borderColor = 'var(--primary)'"
+                        onmouseout="this.style.borderColor = 'var(--border)'"
+                      >
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem">
+                          
+                        </div>
+                        <strong style="color: var(--text)"
+                          >TARA Workflow</strong
+                        >
+                        <div
+                          style="
+                            color: var(--text-light);
+                            font-size: 0.875rem;
+                            margin-top: 0.25rem;
+                          "
+                        >
+                          Risk assessment
+                        </div>
+                      </div>
+                    </a>
+                    <div
+                      style="
+                        padding: 1.5rem;
+                        border: 2px solid var(--border);
+                        border-radius: var(--radius-md);
+                        text-align: center;
+                        cursor: pointer;
+                        transition: all 0.2s;
+                      "
+                      onclick="showModal('uploadModal')"
+                      onmouseover="this.style.borderColor = 'var(--primary)'"
+                      onmouseout="this.style.borderColor = 'var(--border)'"
+                    >
+                      <div style="font-size: 2rem; margin-bottom: 0.5rem">
+                        
+                      </div>
+                      <strong style="color: var(--text)"
+                        >Upload Evidence</strong
+                      >
+                      <div
+                        style="
+                          color: var(--text-light);
+                          font-size: 0.875rem;
+                          margin-top: 0.25rem;
+                        "
+                      >
+                        Submit documents
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project Detail -->
+        <div id="project-detail" class="content-section">
+          <div class="page-header">
+            <div>
+              <h1>Swift Dzire 2026 - All Requirements</h1>
+              <p>
+                Track and manage all 450 AIS-189 compliance requirements
+                (showing 15 sample items).
+              </p>
+            </div>
+            <button class="btn btn-primary" onclick="showModal('uploadModal')">
+               Upload Evidence
+            </button>
+          </div>
+          <div class="filters">
+            <div class="filter-group">
+              <label>Search</label
+              ><input
+                type="text"
+                id="reqSearch"
+                class="search-box"
+                placeholder="Search by code or title..."
+                onkeyup="filterRequirements()"
+              />
+            </div>
+            <div class="filter-group">
+              <label>Status</label
+              ><select
+                id="statusFilterReq"
+                class="search-box"
+                onchange="filterRequirements()"
+              >
+                <option value="">All Status</option>
+                <option value="APPROVED">Approved</option>
+                <option value="UNDER_REVIEW">Under Review</option>
+                <option value="REJECTED">Rejected</option>
+                <option value="NOT_SUBMITTED">Not Submitted</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label>Category</label
+              ><select
+                id="categoryFilter"
+                class="search-box"
+                onchange="filterRequirements()"
+              >
+                <option value="">All Categories</option>
+                <option value="Documentation">Documentation</option>
+                <option value="Risk Management">Risk Management</option>
+                <option value="Development">Development</option>
+                <option value="Technical Controls">Technical Controls</option>
+                <option value="Operations">Operations</option>
+                <option value="Testing">Testing</option>
+                <option value="Training">Training</option>
+              </select>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <h3>Requirements List (15 of 450 shown)</h3>
+            </div>
+            <div class="card-body">
+              <div class="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Code</th>
+                      <th>Title</th>
+                      <th>Category</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="requirementsTable"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submissions -->
+        <div id="submissions" class="content-section">
+          <div class="page-header">
+            <div>
+              <h1>My Submissions</h1>
+              <p>All evidence you have submitted for review.</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <div class="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Requirement</th>
+                      <th>File Name</th>
+                      <th>Submitted Date</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="submissionsTable"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rejected Items -->
+        <div id="rejected-items" class="content-section">
+          <div class="page-header">
+            <div>
+              <h1>Rejected Items</h1>
+              <p>Evidence rejected by auditor - resubmission required.</p>
+            </div>
+          </div>
+          <div id="rejectedItemsList"></div>
+        </div>
+
+        <!-- Progress Report -->
+        <div id="progress-report" class="content-section">
+          <div class="page-header">
+            <div>
+              <h1>Progress Report</h1>
+              <p>Detailed compliance progress analytics.</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body" style="text-align: center; padding: 3rem">
+              <h3> Analytics Coming Soon</h3>
+              <p style="color: var(--text-light); margin-top: 1rem">
+                Detailed charts and analytics will be available in next release.
+              </p>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Upload Modal -->
+    <div id="uploadModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Upload Evidence</h3>
+          <button class="modal-close" onclick="hideModal('uploadModal')">
+            ×
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="uploadForm">
+            <div class="form-group">
+              <label>Select Requirement *</label
+              ><select id="requirementSelect" required>
+                <option value="">-- Select Requirement --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Upload File *</label
+              ><input
+                type="file"
+                id="evidenceFile"
+                required
+                accept=".pdf,.doc,.docx"
+              /><small style="color: var(--text-light)"
+                >Supported: PDF, DOC, DOCX (Max: 100MB)</small
+              >
+            </div>
+            <div class="form-group">
+              <label>Description</label
+              ><textarea
+                id="evidenceDescription"
+                rows="3"
+                placeholder="Brief description..."
+              ></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="hideModal('uploadModal')">
+            Cancel
+          </button>
+          <button class="btn btn-primary" onclick="uploadEvidence()">
+             Upload
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="../js/data.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/router.js"></script>
+    <script>
+      const currentUser = checkAuth();
+
+      function load_project_detail() {
+        const tbody = document.getElementById('requirementsTable');
+        tbody.innerHTML = '';
+        MOCK_DATA.requirements.forEach((req) => {
+          const statusBadge = getStatusBadge(req.status);
+          const statusText = getStatusText(req.status);
+          let actionButton = '';
+          if (req.status === 'NOT_SUBMITTED' || req.status === 'REJECTED') {
+            actionButton =
+              '<button class="btn btn-primary btn-sm" onclick="showModal(\'uploadModal\')"> Upload</button>';
+          } else if (req.status === 'UNDER_REVIEW') {
+            actionButton =
+              '<button class="btn btn-secondary btn-sm" disabled> In Review</button>';
+          } else {
+            actionButton =
+              '<button class="btn btn-success btn-sm" disabled> Approved</button>';
+          }
+          tbody.innerHTML += `<tr class="req-row" data-status="${req.status}" data-category="${req.category}"><td><code>${req.code}</code></td><td><strong>${req.title}</strong></td><td>${req.category}</td><td><span class="badge ${statusBadge}">${statusText}</span></td><td>${actionButton}</td></tr>`;
+        });
+        populateRequirementDropdown();
+      }
+
+      function populateRequirementDropdown() {
+        const select = document.getElementById('requirementSelect');
+        select.innerHTML = '<option value="">-- Select Requirement --</option>';
+        MOCK_DATA.requirements
+          .filter(
+            (r) => r.status === 'NOT_SUBMITTED' || r.status === 'REJECTED',
+          )
+          .forEach((req) => {
+            select.innerHTML += `<option value="${req.code}">${req.code} - ${req.title}</option>`;
+          });
+      }
+
+      function filterRequirements() {
+        const searchTerm = document
+          .getElementById('reqSearch')
+          .value.toLowerCase();
+        const statusFilter = document.getElementById('statusFilterReq').value;
+        const categoryFilter = document.getElementById('categoryFilter').value;
+
+        document.querySelectorAll('.req-row').forEach((row) => {
+          const text = row.textContent.toLowerCase();
+          const status = row.dataset.status;
+          const category = row.dataset.category;
+
+          const matchesSearch = text.includes(searchTerm);
+          const matchesStatus = !statusFilter || status === statusFilter;
+          const matchesCategory =
+            !categoryFilter || category === categoryFilter;
+
+          if (matchesSearch && matchesStatus && matchesCategory) {
+            row.style.display = '';
+          } else {
+            row.style.display = 'none';
+          }
+        });
+      }
+
+      function load_submissions() {
+        const tbody = document.getElementById('submissionsTable');
+        tbody.innerHTML = '';
+        MOCK_DATA.evidence.forEach((ev) => {
+          const badge = getStatusBadge(ev.status);
+          tbody.innerHTML += `<tr><td><code>${ev.requirementCode}</code><br>${ev.requirementTitle}</td><td>${ev.fileName}</td><td>${ev.submittedAt}</td><td><span class="badge ${badge}">${getStatusText(ev.status)}</span></td><td><button class="btn btn-secondary btn-sm" onclick="downloadEvidence('${ev.fileName}')">📥 Download</button></td></tr>`;
+        });
+      }
+
+      function load_rejected_items() {
+        const div = document.getElementById('rejectedItemsList');
+        const rejected = MOCK_DATA.evidence.filter(
+          (e) => e.status === 'REJECTED',
+        );
+        div.innerHTML = '';
+        rejected.forEach((ev) => {
+          div.innerHTML += `<div class="evidence-card"><div class="evidence-header"><div><div class="evidence-title">${ev.requirementCode}: ${ev.requirementTitle}</div><div style="margin-top:0.5rem;padding:0.75rem;background:#fee2e2;border-left:4px solid var(--danger);border-radius:4px;"><strong>❌ Rejection Reason:</strong><br>${ev.reviewComment}</div></div><span class="badge badge-danger">Rejected</span></div><div class="evidence-actions"><button class="btn btn-secondary btn-sm">📥 Download Original</button><button class="btn btn-primary btn-sm" onclick="showModal('uploadModal')">🔄 Resubmit</button></div></div>`;
+        });
+      }
+
+      load_project_detail();
+    </script>
+  </body>
+</html>

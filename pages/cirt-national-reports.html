@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>National Reports - VaultGuard</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>VaultGuard</h2>
+                <p class="tagline">Securing Tomorrow's Mobility</p>
+                <div class="user-info">
+                    <div class="user-avatar">PS</div>
+                    <div class="user-details">
+                        <div class="name">Priya Sharma</div>
+                        <div class="role">CIRT Administrator</div>
+                    </div>
+                </div>
+            </div>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item"><a href="cirt-admin.html">Dashboard</a></li>
+                    <li class="nav-item"><a href="cirt-admin.html#my-projects">My Projects</a></li>
+                    <li class="nav-item"><a href="cirt-admin.html#pending-reviews">Pending Reviews</a></li>
+                    <li class="nav-item"><a href="cirt-national-reports.html" class="active">National Reports</a></li>
+                </ul>
+            </nav>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </aside>
+        
+        <main class="main-content">
+            <div class="page-header">
+                <div>
+                    <h1>National Compliance Reports</h1>
+                    <p>Comprehensive compliance analytics across all OEMs in India.</p>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button class="btn btn-secondary" onclick="exportExcel()">Export Excel</button>
+                    <button class="btn btn-primary" onclick="exportPDF()">Export PDF</button>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="card" style="margin-bottom: 1.5rem;">
+                <div class="card-body">
+                    <div class="filters">
+                        <div class="filter-group">
+                            <label>Date Range</label>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <input type="date" class="search-box" value="2025-09-01" style="width: auto;">
+                                <span style="line-height: 2.5rem;">to</span>
+                                <input type="date" class="search-box" value="2026-02-05" style="width: auto;">
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <label>OEM</label>
+                            <select class="search-box" id="oemFilter" onchange="filterReports()">
+                                <option value="">All OEMs</option>
+                                <option value="1">Maruti Suzuki</option>
+                                <option value="2">Tata Motors</option>
+                                <option value="3">Mahindra & Mahindra</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Standard</label>
+                            <select class="search-box">
+                                <option>All Standards</option>
+                                <option selected>AIS-189</option>
+                                <option>ISO 21434</option>
+                                <option>UN R155</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Status</label>
+                            <select class="search-box">
+                                <option>All Status</option>
+                                <option>Active</option>
+                                <option>Completed</option>
+                                <option>On Hold</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div>
+                            <div class="stat-label">Total OEMs</div>
+                            <div class="stat-value">12</div>
+                        </div>
+                        <div class="stat-icon primary"></div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div>
+                            <div class="stat-label">Active Projects</div>
+                            <div class="stat-value">45</div>
+                        </div>
+                        <div class="stat-icon success"></div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div>
+                            <div class="stat-label">Avg Compliance Rate</div>
+                            <div class="stat-value">73%</div>
+                        </div>
+                        <div class="stat-icon info"></div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div>
+                            <div class="stat-label">Compliant Projects</div>
+                            <div class="stat-value">28</div>
+                        </div>
+                        <div class="stat-icon success"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- OEM-wise Compliance Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>OEM-wise Compliance Status</h3>
+                </div>
+                <div class="card-body">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>OEM Name</th>
+                                    <th>Active Projects</th>
+                                    <th>Compliance Rate</th>
+                                    <th>Pending Reviews</th>
+                                    <th>Rejected Items</th>
+                                    <th>Risk Level</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="oemComplianceTable">
+                                <tr>
+                                    <td><strong>Maruti Suzuki India Ltd</strong><br><small>MSIL</small></td>
+                                    <td>3</td>
+                                    <td>
+                                        <div class="progress-bar" style="height:20px;width:120px;">
+                                            <div class="progress-fill" style="width:77.3%;">77.3%</div>
+                                        </div>
+                                    </td>
+                                    <td>23</td>
+                                    <td>12</td>
+                                    <td><span class="badge badge-warning">MEDIUM</span></td>
+                                    <td><button class="btn btn-secondary btn-sm" onclick="viewOEMDetail(1)">View Details</button></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Tata Motors Limited</strong><br><small>TATA</small></td>
+                                    <td>2</td>
+                                    <td>
+                                        <div class="progress-bar" style="height:20px;width:120px;">
+                                            <div class="progress-fill" style="width:52%;">52%</div>
+                                        </div>
+                                    </td>
+                                    <td>45</td>
+                                    <td>8</td>
+                                    <td><span class="badge badge-danger">HIGH</span></td>
+                                    <td><button class="btn btn-secondary btn-sm" onclick="viewOEMDetail(2)">View Details</button></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Mahindra & Mahindra Ltd</strong><br><small>MM</small></td>
+                                    <td>1</td>
+                                    <td>
+                                        <div class="progress-bar" style="height:20px;width:120px;">
+                                            <div class="progress-fill" style="width:89.6%;">89.6%</div>
+                                        </div>
+                                    </td>
+                                    <td>5</td>
+                                    <td>3</td>
+                                    <td><span class="badge badge-success">LOW</span></td>
+                                    <td><button class="btn btn-secondary btn-sm" onclick="viewOEMDetail(3)">View Details</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Compliance Trends Chart -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Compliance Trends (Last 6 Months)</h3>
+                </div>
+                <div class="card-body">
+                    <div id="complianceTrendChart" style="padding: 2rem;">
+                        <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 0.875rem; color: var(--text-light); margin-bottom: 0.5rem;">Sep 2025</div>
+                                <div style="height: 200px; display: flex; align-items: flex-end; justify-content: center; gap: 0.25rem;">
+                                    <div style="width: 20px; height: 45%; background: #2563eb; border-radius: 4px 4px 0 0;" title="MSIL: 45%"></div>
+                                    <div style="width: 20px; height: 30%; background: #10b981; border-radius: 4px 4px 0 0;" title="TATA: 30%"></div>
+                                    <div style="width: 20px; height: 50%; background: #f59e0b; border-radius: 4px 4px 0 0;" title="MM: 50%"></div>
+                                </div>
+                                <div style="font-weight: 600; margin-top: 0.5rem;">42%</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 0.875rem; color: var(--text-light); margin-bottom: 0.5rem;">Oct 2025</div>
+                                <div style="height: 200px; display: flex; align-items: flex-end; justify-content: center; gap: 0.25rem;">
+                                    <div style="width: 20px; height: 55%; background: #2563eb; border-radius: 4px 4px 0 0;"></div>
+                                    <div style="width: 20px; height: 38%; background: #10b981; border-radius: 4px 4px 0 0;"></div>
+                                    <div style="width: 20px; height: 62%; background: #f59e0b; border-radius: 4px 4px 0 0;"></div>
+                                </div>
+                                <div style="font-weight: 600; margin-top: 0.5rem;">52%</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 0.875rem; color: var(--text-light); margin-bottom: 0.5rem;">Nov 2025</div>
+                                <div style="height: 200px; display: flex; align-items: flex-end; justify-content: center; gap: 0.25rem;">
+                                    <div style="width: 20px; height: 65%; background: #2563eb; border-radius: 4px 4px 0 0;"></div>
+                                    <div style="width: 20px; height: 42%; background: #10b981; border-radius: 4px 4px 0 0;"></div>
+                                    <div style="width: 20px; height: 75%; background: #f59e0b; border-radius: 4px 4px 0 0;"></div>
+                                </div>
+                                <div style="font-weight: 600; margin-top: 0.5rem;">61%</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 0.875rem; color: var(--text-light); margin-bottom: 0.5rem;">Dec 2025</div>
+                                <div style="height: 200px; display: flex; align-items: flex-end; justify-content: center; gap: 0.25rem;">
+                                    <div style="width: 20px; height: 72%; background: #2563eb; border-radius: 4px 4px 0 0;"></div>
+                                    <div style="width: 20px; height: 48%; background: #10b981; border-radius: 4px 4px 0 0;"></div>
+                                    <div style="width: 20px; height: 84%; background: #f59e0b; border-radius: 4px 4px 0 0;"></div>
+                                </div>
+                                <div style="font-weight: 600; margin-top: 0.5rem;">68%</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 0.875rem; color: var(--text-light); margin-bottom: 0.5rem;">Jan 2026</div>
+                                <div style="height: 200px; display: flex; align-items: flex-end; justify-content: center; gap: 0.25rem;">
+                                    <div style="width: 20px; height: 77%; background: #2563eb; border-radius: 4px 4px 0 0;"></div>
+                                    <div style="width: 20px; height: 52%; background: #10b981; border-radius: 4px 4px 0 0;"></div>
+                                    <div style="width: 20px; height: 90%; background: #f59e0b; border-radius: 4px 4px 0 0;"></div>
+                                </div>
+                                <div style="font-weight: 600; margin-top: 0.5rem;">73%</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: center; gap: 2rem; margin-top: 2rem;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div style="width: 16px; height: 16px; background: #2563eb; border-radius: 2px;"></div>
+                                <span>Maruti Suzuki</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div style="width: 16px; height: 16px; background: #10b981; border-radius: 2px;"></div>
+                                <span>Tata Motors</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div style="width: 16px; height: 16px; background: #f59e0b; border-radius: 2px;"></div>
+                                <span>Mahindra & Mahindra</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category-wise Compliance -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Category-wise Compliance</h3>
+                </div>
+                <div class="card-body">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Total Requirements</th>
+                                    <th>Industry Average</th>
+                                    <th>Top Performer</th>
+                                    <th>Needs Attention</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Documentation</strong></td>
+                                    <td>85</td>
+                                    <td><div class="progress-bar" style="height:20px;width:120px;"><div class="progress-fill" style="width:87%;">87%</div></div></td>
+                                    <td>Mahindra (95%)</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Risk Management</strong></td>
+                                    <td>120</td>
+                                    <td><div class="progress-bar" style="height:20px;width:120px;"><div class="progress-fill" style="width:78%;">78%</div></div></td>
+                                    <td>Mahindra (88%)</td>
+                                    <td>Tata (60%)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Development</strong></td>
+                                    <td>95</td>
+                                    <td><div class="progress-bar" style="height:20px;width:120px;"><div class="progress-fill" style="width:67%;">67%</div></div></td>
+                                    <td>Mahindra (85%)</td>
+                                    <td>Tata (45%)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Testing</strong></td>
+                                    <td>75</td>
+                                    <td><div class="progress-bar" style="height:20px;width:120px;"><div class="progress-fill" style="width:60%;">60%</div></div></td>
+                                    <td>Mahindra (80%)</td>
+                                    <td>All OEMs</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Operations</strong></td>
+                                    <td>75</td>
+                                    <td><div class="progress-bar" style="height:20px;width:120px;"><div class="progress-fill" style="width:76%;">76%</div></div></td>
+                                    <td>Mahindra (92%)</td>
+                                    <td>-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Insights -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Key Insights & Recommendations</h3>
+                </div>
+                <div class="card-body">
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div style="padding: 1rem; border-left: 4px solid var(--success); background: #d1fae5; border-radius: var(--radius-md);">
+                            <strong>Positive Trend:</strong> Overall compliance has improved by 31% over the last 5 months across all OEMs.
+                        </div>
+                        <div style="padding: 1rem; border-left: 4px solid var(--warning); background: #fed7aa; border-radius: var(--radius-md);">
+                            <strong>Attention Required:</strong> Testing category shows lowest compliance (60%). Recommend focused workshops for OEMs.
+                        </div>
+                        <div style="padding: 1rem; border-left: 4px solid var(--info); background: #dbeafe; border-radius: var(--radius-md);">
+                            <strong>Best Practice:</strong> Mahindra & Mahindra consistently leads in all categories. Their CSMS framework can serve as industry benchmark.
+                        </div>
+                        <div style="padding: 1rem; border-left: 4px solid var(--danger); background: #fee2e2; border-radius: var(--radius-md);">
+                            <strong>Critical:</strong> Tata Motors needs immediate support in Development (45%) and Testing (40%) categories.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/data.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/utils.js"></script>
+    <script>
+        const currentUser = checkAuth();
+
+        function filterReports() {
+            showSuccessToast('Filters applied!');
+        }
+
+        function viewOEMDetail(oemId) {
+            showSuccessToast('Loading OEM detailed report...');
+        }
+
+        function exportExcel() {
+            showSuccessToast('Exporting to Excel...');
+        }
+
+        function exportPDF() {
+            showSuccessToast('Generating PDF report...');
+        }
+    </script>
+</body>
+</html>
